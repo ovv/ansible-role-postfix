@@ -35,7 +35,7 @@
     regexp: '^{{ item.key }}'
     line: '{{ item.key }}: {{ item.value }}'
     state: present
-  with_dict: "{{ mail_alias }}"
+  with_dict: "{{ mail_aliases }}"
   register: set_alias
   notify: reload alias
 

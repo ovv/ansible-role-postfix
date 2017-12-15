@@ -4,5 +4,5 @@
     - ansible-role-postfix
   vars:
     mailname: example.com
-    mail_alias:
+    mail_aliases:
       root: root@example.com
