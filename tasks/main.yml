@@ -1,0 +1,46 @@
+---
+
+- name: Debconf options
+  debconf:
+    name: postifx
+    question: "postfix/{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: "string"
+  with_items:
+    - {question: mailname, value: "{{ mailname }}"}
+    - {question: main_mailer_type, value: "'Internet Site'"}
+
+- name: Install
+  apt:
+    package: "{{ item }}"
+    state: installed
+    force: yes
+  with_items:
+    - postfix
+    - mailutils
+
+- name: Configure
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - {src: etc/postfix/main.cf, dest: /etc/postfix/main.cf}
+    - {src: etc/mailname, dest: /etc/mailname}
+  notify:
+    - restart postfix
+
+- name: Aliases
+  lineinfile:
+    dest: /etc/aliases
+    regexp: '^{{ item.key }}'
+    line: '{{ item.key }}: {{ item.value }}'
+    state: present
+  with_dict: "{{ mail_alias }}"
+  register: set_alias
+  notify: reload alias
+
+- name: Enable
+  service:
+    name: postfix
+    state: started
+    enabled: yes
