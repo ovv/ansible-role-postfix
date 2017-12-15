@@ -23,10 +23,22 @@ $ git submodule add -b master https://github.com/ovv/ansible-role-postfix.git ov
 Role Variables
 --------------
 
+* `mailname`: Server name
+* `mail_aliases`: Dict of alias to add.
 
 Example Playbook
 ----------------
 
+```yaml
+
+- hosts: localhost
+  roles:
+    - ovv.postfix
+  vars:
+    mailname: example.com
+    mail_aliases:
+      root: root@example.com
+```
 
 License
 -------
