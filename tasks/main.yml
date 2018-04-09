@@ -13,7 +13,7 @@
 - name: Install
   apt:
     package: "{{ item }}"
-    state: installed
+    state: present
     force: yes
   with_items:
     - postfix
