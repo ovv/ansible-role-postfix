@@ -12,12 +12,11 @@
 
 - name: Install
   apt:
-    package: "{{ item }}"
+    package:
+      - postfix
+      - mailutils
     state: present
     force: yes
-  with_items:
-    - postfix
-    - mailutils
 
 - name: Configure
   template:
