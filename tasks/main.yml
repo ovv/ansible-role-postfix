@@ -15,6 +15,7 @@
     package:
       - postfix
       - mailutils
+      - libsasl2-modules
     state: present
     force: yes
 
@@ -36,7 +37,21 @@
     state: present
   with_dict: "{{ mail_aliases }}"
   register: set_alias
-  notify: reload alias
+  notify:
+    - reload alias
+    - restart postfix
+
+- name: Relay settings
+  template:
+    src: "etc/postfix/sasl/sasl_passwd.j2"
+    dest: "/etc/postfix/sasl/sasl_passwd"
+    owner: root
+    group: root
+    mode: '600'
+  when: postfix_relay.address
+  notify:
+    - regenerate relay settings
+    - restart postfix
 
 - name: Enable
   service:

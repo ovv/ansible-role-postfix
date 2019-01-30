@@ -1,9 +1,12 @@
 ---
 
+- name: regenerate relay settings
+  command: postmap /etc/postfix/sasl/sasl_passwd
+
+- name: reload alias
+  command: newaliases
+
 - name: restart postfix
   service:
     name: postfix.service
     state: restarted
-
-- name: reload alias
-  command: newaliases
