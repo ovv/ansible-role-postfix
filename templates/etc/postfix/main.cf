@@ -30,7 +30,7 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 # information on enabling SSL in the smtp client.
 
 # Rewrite outgoing address
-# smtp_generic_maps = hash:/etc/postfix/generic
+smtp_generic_maps = hash:/etc/postfix/generic
 
 # Force ipv4
 inet_protocols = ipv4
@@ -39,7 +39,7 @@ smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_una
 myhostname = {{ inventory_hostname }}
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-myorigin = /etc/mailname
+myorigin = {{ postfix_relay.myorigin }}
 mydestination = localhost, $myhostname
 {% if postfix_relay.address %}
 relayhost = [{{ postfix_relay.address }}]:{{ postfix_relay.port }}
@@ -62,5 +62,9 @@ smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
 # Enable STARTTLS encryption
 smtp_tls_security_level = encrypt
 # Location of CA certificates
+{% if ansible_distribution == 'Debian' %}
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+{% else %}
+smtp_tls_CAfile = /etc/ssl/certs/ca-bundle.crt
+{% endif %}
 {% endif %}

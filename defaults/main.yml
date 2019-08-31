@@ -2,3 +2,5 @@
 
 postfix_relay:
   address: ''
+
+postfix_generic: []

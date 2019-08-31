@@ -9,15 +9,24 @@
   with_items:
     - {question: mailname, value: "{{ mailname }}"}
     - {question: main_mailer_type, value: "'Internet Site'"}
+  when:
+    - ansible_distribution == 'Debian'
 
 - name: Install
-  apt:
-    package:
+  package:
+    name:
       - postfix
-      - mailutils
-      - libsasl2-modules
+#      - mailutils
+#      - libsasl2-modules
     state: present
-    force: yes
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/postfix
+    - /etc/postfix/sasl
 
 - name: Configure
   template:
@@ -25,7 +34,6 @@
     dest: "{{ item.dest }}"
   with_items:
     - {src: etc/postfix/main.cf, dest: /etc/postfix/main.cf}
-    - {src: etc/mailname, dest: /etc/mailname}
   notify:
     - restart postfix
 
@@ -51,6 +59,18 @@
   when: postfix_relay.address
   notify:
     - regenerate relay settings
+    - restart postfix
+
+- name: Generic settings
+  template:
+    src: "etc/postfix/generic.j2"
+    dest: "/etc/postfix/generic"
+    owner: root
+    group: root
+    mode: '600'
+  when: postfix_generic | length > 0
+  notify:
+    - regenerate generic settings
     - restart postfix
 
 - name: Enable

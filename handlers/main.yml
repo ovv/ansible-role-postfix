@@ -3,6 +3,9 @@
 - name: regenerate relay settings
   command: postmap /etc/postfix/sasl/sasl_passwd
 
+- name: regenerate generic settings
+  command: postmap /etc/postfix/generic
+
 - name: reload alias
   command: newaliases
 
