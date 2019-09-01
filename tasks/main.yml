@@ -16,9 +16,20 @@
   package:
     name:
       - postfix
-#      - mailutils
-#      - libsasl2-modules
+      - mailutils
+      - libsasl2-modules
     state: present
+  when:
+    - ansible_distribution == 'Debian'
+
+- name: Install
+  package:
+    name:
+      - postfix
+      - mailx
+    state: present
+  when:
+    - ansible_distribution == 'Fedora'
 
 - name: Create directories
   file:

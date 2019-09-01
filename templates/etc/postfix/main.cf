@@ -39,7 +39,7 @@ smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_una
 myhostname = {{ inventory_hostname }}
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-myorigin = {{ postfix_relay.myorigin }}
+myorigin = {{ postfix_relay.myorigin | default(mailname) }}
 mydestination = localhost, $myhostname
 {% if postfix_relay.address %}
 relayhost = [{{ postfix_relay.address }}]:{{ postfix_relay.port }}
