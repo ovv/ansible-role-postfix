@@ -79,7 +79,6 @@
     owner: root
     group: root
     mode: '600'
-  when: postfix_generic | length > 0
   notify:
     - regenerate generic settings
     - restart postfix
